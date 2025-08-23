@@ -1,35 +1,109 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.module.scss'
+import React, { useState } from 'react';
+import './App.module.scss';
+import { useTodos } from './hooks/useTodos';
+import type { Todo } from './types/Todo';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const { todos, addTodo, toggleTodo, changeTextTodo, deleteTodo } = useTodos();
+  const [input, setInput] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = input.trim();
+    if (trimmed) {
+      addTodo(trimmed);
+      setInput('');
+    }
+  };
+
+  const startEditing = (todo: Todo) => {
+    setEditingId(todo.id);
+    setEditText(todo.text);
+  };
+
+  const saveEdit = () => {
+    if (editingId !== null) {
+      const trimmed = editText.trim();
+      if (trimmed) {
+        changeTextTodo(editingId, trimmed);
+        setEditingId(null);
+        setEditText('');
+      }
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditText('');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app">
+      <h1>Todo App</h1>
+      <form onSubmit={handleSubmit} className="add-form">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Что нужно сделать"
+          className="input"
+        />
+        <button type="submit" className="button">
+          Добавить
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      </form>
 
-export default App
+      <ul className="todo-list">
+        {todos.map((todo: Todo) => (
+          <li key={todo.id} className="todo-item">
+            {editingId === todo.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  autoFocus
+                  onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                  className="edit-input"
+                />
+                <button onClick={saveEdit} className="save-btn">
+                  Сохранить
+                </button>
+                <button onClick={cancelEdit} className="cancel-btn">
+                  Отмена
+                </button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  onChange={() => toggleTodo(todo.id)}
+                  className="checkbox"
+                />
+                <span
+                  style={{
+                    textDecoration: todo.completed ? 'line-through' : 'none',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => startEditing(todo)}
+                >
+                  {todo.text}
+                </span>
+                <button onClick={() => deleteTodo(todo.id)} className="delete-btn">
+                  Удалить
+                </button>
+                <button onClick={() => startEditing(todo)} className="edit-btn">
+                  Редактировать
+                </button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
