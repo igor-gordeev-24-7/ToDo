@@ -40,3 +40,47 @@
 .read-the-docs {
   color: #888;
 }
+
+.app {
+  padding: 5%;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  display: flex;
+  align-self: center;
+}
+
+.form {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.formInput {
+  font-size: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.todoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.editInput {
+  font-size: 20px;
+  width: 100%;
+  box-sizing: border-box;
+} 
+
+.spanText {
+  flex: 1;
+  word-wrap: break-word;
+  min-width: 0;
+  font-size: 20px;
+}
