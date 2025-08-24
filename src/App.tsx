@@ -25,9 +25,9 @@ const App: React.FC = () => {
 
   const saveEdit = () => {
     if (editingId !== null) {
-      const trimmed = editText.trim();
-      if (trimmed) {
-        changeTextTodo(editingId, trimmed);
+      const trimmedText = editText.trim();
+      if (trimmedText) {
+        changeTextTodo(editingId, trimmedText);
         setEditingId(null);
         setEditText('');
       }
