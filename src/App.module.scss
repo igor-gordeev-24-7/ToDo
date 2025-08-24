@@ -41,9 +41,14 @@
   color: #888;
 }
 
+.wrapper {
+  margin: 0 auto;
+  max-width: 1000px;
+  width: 100%;
+}
+
 .app {
-  padding: 5%;
-  width: 600px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -83,4 +88,9 @@
   word-wrap: break-word;
   min-width: 0;
   font-size: 20px;
+}
+@media (max-width: 650px) {
+  .app {
+    width: 600px;
+  }
 }
