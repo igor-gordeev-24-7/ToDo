@@ -5,34 +5,50 @@ import type { Todo } from './types/Todo';
 
 import style from './App.module.scss'
 
+import ErrorMessage from './components/ErrorMessage/ErrorMessage'; 
+
 const App: React.FC = () => {
   const { todos, addTodo, toggleTodo, changeTextTodo, deleteTodo } = useTodos();
   const [input, setInput] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
-    if (trimmed) {
-      addTodo(trimmed);
-      setInput('');
+
+    if (!trimmed) {
+      setError('Текст задачи не может быть пустым');
+      return;
     }
+
+    addTodo(trimmed);
+    setInput('');
+    if(error) setError(null);
   };
 
   const startEditing = (todo: Todo) => {
     setEditingId(todo.id);
     setEditText(todo.text);
+
+    if (error) setError(null);
   };
 
   const saveEdit = () => {
     if (editingId !== null) {
       const trimmedText = editText.trim();
-      if (trimmedText) {
-        changeTextTodo(editingId, trimmedText);
-        setEditingId(null);
-        setEditText('');
+
+      if (!trimmedText) {
+        setError('Текст задачи не может быть пустым');
+        return;
       }
+
+      changeTextTodo(editingId, trimmedText);
+      setEditingId(null);
+      setEditText('');
+      if (error) setError(null);
     }
   };
 
@@ -45,21 +61,31 @@ const App: React.FC = () => {
     <div className={style.wrapper}>
       <div className={style.app}>
         <h1 className={style.heading}>Todo App</h1>
+
+        {error && (
+          <ErrorMessage
+            message={error}
+            onClose={() => setError(null)}
+            autoHideDuration={5000}
+          />
+        )}
+
         <form onSubmit={handleSubmit} className={style.form}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Что нужно сделать"
             className={style.formInput}
+            onFocus={() => error && setError(null)}
           />
-          <button type="submit" className="button">
+          <button type="submit" className={style.button}>
             Добавить
           </button>
         </form>
 
-        <ul className="todo-list">
+        <ul className={style.todoList}>
           {todos.map((todo: Todo) => (
-            <li key={todo.id} className="todo-item">
+            <li key={todo.id} className={style.todoItemLi}>
               {editingId === todo.id ? (
                 // Режим редактирования
                 <div className={style.todoItem}>
@@ -71,10 +97,10 @@ const App: React.FC = () => {
                     onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
                     className={style.editInput}
                   />
-                  <button onClick={saveEdit} className="save-btn">
+                  <button onClick={saveEdit} className={style.saveBtn}>
                     Сохранить
                   </button>
-                  <button onClick={cancelEdit} className="cancel-btn">
+                  <button onClick={cancelEdit} className={style.cancelBtn}>
                     Отмена
                   </button>
                 </div>
