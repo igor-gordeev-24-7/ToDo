@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+// src/App.tsx
+import React, { useState, useContext } from 'react';
 import './App.module.scss';
 import { useTodos } from './hooks/useTodos';
 import type { Todo } from './types/Todo';
 
-import style from './App.module.scss'
+import style from './App.module.scss';
 
-import ErrorMessage from './components/ErrorMessage/ErrorMessage'; 
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import ThemeToggle from './components/ThemeToggle/ThemeToggle';
+
+import { ThemeContext } from './context/ThemeContext';
 
 const App: React.FC = () => {
   const { todos, addTodo, toggleTodo, changeTextTodo, deleteTodo } = useTodos();
   const [input, setInput] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
+
+  const context = useContext(ThemeContext);
+
+  if (!context) {
+    throw new Error('App must be used within a ThemeProvider');
+  }
+
+  const { theme } = context;
 
   const [error, setError] = useState<string | null>(null);
 
@@ -26,13 +38,12 @@ const App: React.FC = () => {
 
     addTodo(trimmed);
     setInput('');
-    if(error) setError(null);
+    if (error) setError(null);
   };
 
   const startEditing = (todo: Todo) => {
     setEditingId(todo.id);
     setEditText(todo.text);
-
     if (error) setError(null);
   };
 
@@ -55,11 +66,15 @@ const App: React.FC = () => {
   const cancelEdit = () => {
     setEditingId(null);
     setEditText('');
+    if (error) setError(null);
   };
 
   return (
     <div className={style.wrapper}>
-      <div className={style.app}>
+      <div className={`${style.app} ${theme === 'dark' ? style.dark : style.light}`}>
+        
+        <ThemeToggle />
+        
         <h1 className={style.heading}>Todo App</h1>
 
         {error && (
@@ -87,7 +102,6 @@ const App: React.FC = () => {
           {todos.map((todo: Todo) => (
             <li key={todo.id} className={style.todoItemLi}>
               {editingId === todo.id ? (
-                // Режим редактирования
                 <div className={style.todoItem}>
                   <input
                     type="text"
@@ -105,7 +119,6 @@ const App: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                // Обычный режим
                 <div className={style.todoItem}>
                   <span
                     style={{

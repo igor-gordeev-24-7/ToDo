@@ -1,97 +1,160 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
+// Контейнер приложения
 .wrapper {
   margin: 0 auto;
   max-width: 1000px;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+// Основной блок
 .app {
   width: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.heading {
-  display: flex;
-  align-self: center;
-}
-
-.form {
-  display: flex;
-  justify-content: space-between;
   gap: 20px;
 }
 
-.formInput {
-  font-size: 20px;
-  width: 100%;
-  box-sizing: border-box;
+// Заголовок
+.heading {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+  color: inherit;
 }
 
+// Форма добавления
+.form {
+  display: flex;
+  gap: 12px;
+}
+
+// Инпуты: общий стиль
+.formInput,
+.editInput {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.formInput::placeholder,
+.editInput::placeholder {
+  color: var(--input-placeholder);
+}
+
+.formInput:focus,
+.editInput:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.25);
+}
+
+// Список задач
+.todoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// Элемент списка (li)
+.todoItemLi {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--card-bg, rgba(255, 255, 255, 0.05));
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+// Контейнер задачи
 .todoItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: 100%;
+}
+
+// Текст задачи
+.spanText {
+  flex: 1;
+  font-size: 18px;
+  word-wrap: break-word;
+  min-width: 0;
+  cursor: pointer;
   padding: 4px 0;
 }
 
-.editInput {
-  font-size: 20px;
-  width: 100%;
-  box-sizing: border-box;
-} 
-
-.spanText {
-  flex: 1;
-  word-wrap: break-word;
-  min-width: 0;
-  font-size: 20px;
+// Чекбокс
+.checkbox {
+  margin: 0;
+  transform: scale(1.2);
 }
+
+// Кнопки
+.button,
+.saveBtn,
+.cancelBtn,
+.edit-btn,
+.delete-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.button,
+.saveBtn {
+  background-color: #646cff;
+  color: white;
+}
+
+.cancelBtn,
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.edit-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+// Адаптивность
 @media (max-width: 650px) {
-  .app {
-    width: 600px;
+  .wrapper {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .form {
+    flex-direction: column;
+  }
+
+  .formInput,
+  .button {
+    width: 100%;
+  }
+
+  .heading {
+    font-size: 2rem;
+  }
+
+  .todoItemLi {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
   }
 }
